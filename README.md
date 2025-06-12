@@ -1,4 +1,5 @@
 # AppMonitor
+[![Workflow CI](https://github.com/leonardo-tx/appmonitor-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/leonardo-tx/appmonitor-pipeline/actions/workflows/ci.yml)
 
 O projeto nesse repositório é referente ao trabalho
 final (Assessment) desenvolvido na disciplina de 
@@ -70,3 +71,14 @@ configurações de segredos e variáveis do Github, só que diferente do *vars*,
 é utilizado para armazenar dados sensíveis, como chave da API e credenciais por exemplo,
 já que os dados na execução do workflow não são mostrados no log. Para utiliza-la, é
 possível resgatar o valor apenas com a expressão de contexto ${{ secrets.NAME }}.
+
+## Como os logs e summaries ajudam a depurar pipelines
+
+Quando acontece um erro em um job, é possível verificar o que deu errado ao visualizar o
+log do próprio pipeline, o que ajuda o desenvolvedor a saber o que aconteceu, o habilitando
+a corrigir o problema de um modo mais fácil.
+
+Um sumário embora não seja automático, é possível fazer com que os pipelines gerem um,
+podendo ser colocado informações importantes que ajudem a dar mais contexto do workflow
+em si, de suas tarefas e resultados, também podendo ajudar a corrigir erros ou obter
+informações de um pipeline executado.
