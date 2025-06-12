@@ -1,0 +1,39 @@
+name: Monitor Workflow CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  monitor-env:
+    runs-on: ubuntu-latest
+    env:
+      APP_ENV: ${{ vars.APP_ENV }}
+      SUPPORT_EMAIL: ${{ vars.SUPPORT_EMAIL }}
+      API_KEY: ${{ secrets.API_KEY }}
+
+    steps:
+      - name: Monitor Enviroment
+        run: |
+          echo "Ambiente do aplicativo: $APP_ENV"
+          echo "E-mail de suporte: $SUPPORT_EMAIL"
+          echo O valor abaixo não será mostrado no Actions!
+          echo "Chave da API: $API_KEY"
+
+  monitor-var:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Monitor Variable
+        run: |
+          echo Ambiente do aplicativo: ${{ vars.APP_ENV }}
+          echo E-mail de suporte: ${{ vars.SUPPORT_EMAIL }}
+
+  monitor-secret:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Monitor Secret
+        run: |
+          echo O valor abaixo não será mostrado no Actions!
+          echo Chave da API: ${{ secrets.API_KEY }}
+
