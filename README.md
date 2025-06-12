@@ -49,3 +49,24 @@ a adição de novas funcionalidades, caso haja um problema com uma versão nova,
 
 Tags são bastante utilizadas, tanto em bibliotecas quanto em projetos, sendo fundamental
 para registrar os incrementos de um projeto.
+
+## Diferenças entre Variáveis de Repositório, Segredos de Repositório e Variáveis de Ambiente
+
+- Variável de Ambiente (env): Diferente dos *vars* e *secrets*, a variável de um *env* é 
+declarada no arquivo do workflow, podendo ser passado em diferentes contextos, no global, 
+no job e no step, cada um representando escopos diferentes. Para utiliza-la, é possível
+resgatar o valor com $VARIAVEL dentro de um run bash por exemplo ou com uma expressão
+de contexto ${{ env.NAME }} que pode ser usado em qualquer lugar, desde que esteja 
+no mesmo escopo que o *env*. É possível passar um valor de *vars* ou do *secrets* para 
+uma variável *env*.
+
+- Variável de Repositório (vars): O *vars* assim como o *secrets*, são declarados nas
+configurações de segredos e variáveis do Github, só que diferente do *secrets*, o *vars*
+é utilizado para armazenar valores que são públicos e não confidenciais. Para utiliza-la,
+é possível resgatar o valor apenas com a expressão de contexto ${{ vars.NAME }}.
+
+- Segredo de Repositório (secrets): O *secrets* assim como o *vars*, são declarados nas
+configurações de segredos e variáveis do Github, só que diferente do *vars*, o *secrets*
+é utilizado para armazenar dados sensíveis, como chave da API e credenciais por exemplo,
+já que os dados na execução do workflow não são mostrados no log. Para utiliza-la, é
+possível resgatar o valor apenas com a expressão de contexto ${{ secrets.NAME }}.
