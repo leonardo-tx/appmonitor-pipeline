@@ -32,13 +32,38 @@ jobs:
   package:
     needs: test
     runs-on: ubuntu-latest
+    outputs:
+      artifact-url: ${{ steps.upload-report.outputs.artifact-url }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Upload report
+        id: upload-report
         uses: actions/upload-artifact@v4
         with:
           name: report
           path: .
+
+  summary:
+    needs: [validate, test, package]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Throw Warning
+        run: |
+          echo "::warning:: Essa é uma mensagem de alerta"
+
+      - name: Generate Summary
+        run: |
+          echo "##" Sumário do Workflow CI >> $GITHUB_STEP_SUMMARY
+          echo - Host: ${{ runner.os }} >> $GITHUB_STEP_SUMMARY
+          echo - Evento disparado na branch: ${{ github.ref_name }} >> $GITHUB_STEP_SUMMARY
+          echo "###" Resultado dos jobs >> $GITHUB_STEP_SUMMARY
+          echo - validate: ${{ needs.validate.result }} >> $GITHUB_STEP_SUMMARY
+          echo - test: ${{ needs.test.result }} >> $GITHUB_STEP_SUMMARY
+          echo - package: ${{ needs.package.result }} >> $GITHUB_STEP_SUMMARY
+          echo "###" Artefato de Relatório Gerado >> $GITHUB_STEP_SUMMARY
+          echo ${{ needs.package.outputs.artifact-url }} >> $GITHUB_STEP_SUMMARY
