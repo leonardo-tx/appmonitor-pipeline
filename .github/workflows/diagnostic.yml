@@ -21,7 +21,9 @@ jobs:
           RESULT="$([ -z "$APP_ENV" ]; echo $?)"
           echo "result=$RESULT" >> "$GITHUB_OUTPUT"
 
-          exit [ $RESULT -eq 1 ]
+          if [ $RESULT -eq 0 ]; then
+            exit 1
+          fi
 
       - name: Verify API key secret
         id: verify-api-key-secret
@@ -30,7 +32,9 @@ jobs:
           RESULT="$([ -z "$API_KEY" ]; echo $?)"
           echo "result=$RESULT" >> "$GITHUB_OUTPUT"
 
-          exit [ $RESULT -eq 1 ]
+          if [ $RESULT -eq 0 ]; then
+            exit 1
+          fi
 
   summary:
     runs-on: ubuntu-latest
@@ -42,9 +46,9 @@ jobs:
         run: |
           echo "## Diagnóstico para Correção" >> $GITHUB_STEP_SUMMARY
           echo "O workflow falhou por conta de uma ou mais variáveis não definidas" >> $GITHUB_STEP_SUMMARY
-          if [[ ${{ needs.diagnostic.outputs.has-app-env == '0' }} ]]; then
+          if [[ ${{ needs.diagnostic.outputs.has-app-env }} == '0' ]]; then
             echo "- A variável APP_ENV não está definida" >> $GITHUB_STEP_SUMMARY
           fi
-          if [[ ${{ needs.diagnostic.outputs.has-api-key == '0' }} ]]; then
+          if [[ ${{ needs.diagnostic.outputs.has-api-key }} == '0' ]]; then
             echo "- O segredo API_KEY não está definido" >> $GITHUB_STEP_SUMMARY
           fi
