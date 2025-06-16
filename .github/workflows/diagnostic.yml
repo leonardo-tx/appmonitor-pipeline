@@ -42,9 +42,9 @@ jobs:
         run: |
           echo "## Diagnóstico para Correção" >> $GITHUB_STEP_SUMMARY
           echo "O workflow falhou por conta de uma ou mais variáveis não definidas" >> $GITHUB_STEP_SUMMARY
-          if [[ ${{ needs.diagnostic.outputs.has-app-env }} -eq 0 ]]; then
+          if [[ ${{ needs.diagnostic.outputs.has-app-env == '0' }} ]]; then
             echo "- A variável APP_ENV não está definida" >> $GITHUB_STEP_SUMMARY
           fi
-          if [[ ${{ needs.diagnostic.outputs.has-api-key -eq 0 }} ]]; then
+          if [[ ${{ needs.diagnostic.outputs.has-api-key == '0' }} ]]; then
             echo "- O segredo API_KEY não está definido" >> $GITHUB_STEP_SUMMARY
           fi
