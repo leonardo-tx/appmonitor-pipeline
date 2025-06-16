@@ -1,0 +1,50 @@
+name: Diagnostic Workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    env:
+      APP_ENV: ${{ vars.APP_ENV }}
+      API_KEY: ${{ secrets.API_KEY }}
+    outputs:
+      has-app-env: ${{ steps.verify-app-env-var.outputs.result }}
+      has-api-key: ${{ steps.verify-api-key-secret.outputs.result }}
+
+    steps:
+      - name: Verify APP env variable
+        id: verify-app-env-var
+        if: always()
+        run: |
+          RESULT="$([ -z "$APP_ENV" ]; echo $?)"
+          echo "result=$RESULT" >> "$GITHUB_OUTPUT"
+
+          exit [ $RESULT -eq 1 ]
+
+      - name: Verify API key secret
+        id: verify-api-key-secret
+        if: always()
+        run: |
+          RESULT="$([ -z "$API_KEY" ]; echo $?)"
+          echo "result=$RESULT" >> "$GITHUB_OUTPUT"
+
+          exit [ $RESULT -eq 1 ]
+
+  summary:
+    runs-on: ubuntu-latest
+    if: failure()
+    needs: diagnostic
+
+    steps:
+      - name: Generate Summary
+        run: |
+          echo "## Diagnóstico para Correção" >> $GITHUB_STEP_SUMMARY
+          echo "O workflow falhou por conta de uma ou mais variáveis não definidas" >> $GITHUB_STEP_SUMMARY
+          if [[ ${{ needs.diagnostic.outputs.has-app-env }} -eq 0 ]]; then
+            echo "- A variável APP_ENV não está definida" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [[ ${{ needs.diagnostic.outputs.has-api-key -eq 0 }} ]]; then
+            echo "- O segredo API_KEY não está definido" >> $GITHUB_STEP_SUMMARY
+          fi
